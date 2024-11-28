@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tp_final/elementos/jugadoresdata.dart';
@@ -25,7 +26,7 @@ class JugadoresNotifier extends StateNotifier<List<Jugadores>> {
       }).toList();
       state = jugadoresList;
     } catch (e) {
-      print("Error cargando jugadores: $e");
+      debugPrint("Error cargando jugadores: $e");
     }
   }
 
@@ -41,7 +42,7 @@ class JugadoresNotifier extends StateNotifier<List<Jugadores>> {
       });
       await cargarJugadores();
     } catch (e) {
-      print("Error agregando jugador: $e");
+      debugPrint("Error agregando jugador: $e");
     }
   }
 
@@ -55,7 +56,7 @@ class JugadoresNotifier extends StateNotifier<List<Jugadores>> {
           .delete();
       await cargarJugadores();
     } catch (e) {
-      print("Error eliminando jugador: $e");
+      debugPrint("Error eliminando jugador: $e");
     }
   }
 
@@ -75,7 +76,7 @@ class JugadoresNotifier extends StateNotifier<List<Jugadores>> {
       });
       await cargarJugadores();
     } catch (e) {
-      print("Error editando jugador: $e");
+      debugPrint("Error editando jugador: $e");
     }
   }
 }

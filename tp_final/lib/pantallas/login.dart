@@ -106,17 +106,17 @@ class Login extends StatelessWidget {
                       (perfilData) => perfilData.usuario == inputUser);
 
                   if (inputPass.isEmpty || inputUser.isEmpty) {
-                    print("Por favor, ingrese Usuario y/o Contraseña");
+                    debugPrint("Por favor, ingrese Usuario y/o Contraseña");
                     const Text(
                       'Por favor, ingrese el usuario y/o contraseña',
                       style: TextStyle(color: Colors.red),
                     );
                   } else if (perfilData.usuario == inputUser &&
                       perfilData.contrasena == inputPass) {
-                    print("Log In exitoso");
+                    debugPrint("Log In exitoso");
                     context.pushNamed(Home.name, extra: inputUser);
                   } else {
-                    print("Log In fallido");
+                    debugPrint("Log In fallido");
                   }
                 },
                 child: const Text(
