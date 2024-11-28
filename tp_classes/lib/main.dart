@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:log_in/router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // Importar Riverpod
+import 'package:log_in/router.dart'; // Importar la configuración de rutas
 
 void main() {
-  runApp(const MainApp());
+  runApp(const ProviderScope(
+      child: MainApp())); // Envolver la aplicación en ProviderScope
 }
 
 class MainApp extends StatelessWidget {
@@ -11,8 +13,8 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: appRouter,
-      debugShowCheckedModeBanner: false,
+      routerConfig: appRouter, // Configuración de rutas
+      debugShowCheckedModeBanner: false, // Ocultar el banner de debug
     );
   }
 }
