@@ -12,8 +12,8 @@ class AuthService {
       password: contrasena,
     );
 
-    await _firestore.collection('usuarios').doc(userCredential.user!.uid).set({
-      'usuario': usuario,
+    await _firestore.collection('Users').doc(userCredential.user!.uid).set({
+      'Users': usuario,
     });
   }
 

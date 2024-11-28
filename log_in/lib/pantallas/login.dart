@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:log_in/elementos/auth_provider.dart';
 
 class Login extends StatefulWidget {
   static const String name = 'login';
+
+  const Login({super.key});
 
   @override
   _LoginState createState() => _LoginState();
@@ -17,9 +20,9 @@ class _LoginState extends State<Login> {
     showDialog(
       context: context,
       builder: (context) {
-        final TextEditingController _nuevoUsuarioController =
+        final TextEditingController nuevoUsuarioController =
             TextEditingController();
-        final TextEditingController _nuevaContrasenaController =
+        final TextEditingController nuevaContrasenaController =
             TextEditingController();
 
         return AlertDialog(
@@ -28,11 +31,11 @@ class _LoginState extends State<Login> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _nuevoUsuarioController,
+                controller: nuevoUsuarioController,
                 decoration: const InputDecoration(labelText: 'Usuario'),
               ),
               TextField(
-                controller: _nuevaContrasenaController,
+                controller: nuevaContrasenaController,
                 decoration: const InputDecoration(labelText: 'Contraseña'),
                 obscureText: true,
               ),
@@ -43,8 +46,8 @@ class _LoginState extends State<Login> {
               onPressed: () async {
                 try {
                   await _authService.registrarUsuario(
-                    _nuevoUsuarioController.text,
-                    _nuevaContrasenaController.text,
+                    nuevoUsuarioController.text,
+                    nuevaContrasenaController.text,
                   );
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -67,11 +70,27 @@ class _LoginState extends State<Login> {
 
   void _iniciarSesion() async {
     try {
-      await _authService.iniciarSesion(
-        _usuarioController.text,
-        _contrasenaController.text,
-      );
-      Navigator.pushReplacementNamed(context, '/home');
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('Users') // Nombre de la colección
+          .where('User', isEqualTo: _usuarioController.text)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final userDoc = querySnapshot.docs.first;
+        final userPassword = userDoc['Password'];
+
+        if (userPassword == _contrasenaController.text) {
+          Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Contraseña incorrecta.')),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No se encontró el documento.')),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),

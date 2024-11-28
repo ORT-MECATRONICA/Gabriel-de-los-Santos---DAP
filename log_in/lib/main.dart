@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:log_in/router.dart';
-import 'package:log_in/firebase_options.dart';
+import 'package:log_in/pantallas/login.dart'; // Asegúrate de importar tu archivo de Login
+import 'package:log_in/pantallas/home.dart'; // Asegúrate de importar la pantalla de Home
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MainApp());
+void main() {
+  runApp(MyApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: appRouter,
-      debugShowCheckedModeBanner: false,
+    return MaterialApp(
+      title: 'Flutter App',
+      initialRoute: '/',
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/':
+            return MaterialPageRoute(builder: (context) => const Login());
+          case '/home':
+            return MaterialPageRoute(builder: (context) => const Home());
+          default:
+            return MaterialPageRoute(builder: (context) => const Login());
+        }
+      },
     );
   }
 }
