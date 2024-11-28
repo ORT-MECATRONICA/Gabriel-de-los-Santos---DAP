@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // Importar Riverpod
-import 'package:log_in/router.dart'; // Importar la configuración de rutas
+import 'package:firebase_core/firebase_core.dart';
+import 'package:log_in/router.dart';
+import 'package:log_in/elementos/firebase_options.dart';
 
-void main() {
-  runApp(const ProviderScope(
-      child: MainApp())); // Envolver la aplicación en ProviderScope
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
@@ -13,8 +17,8 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: appRouter, // Configuración de rutas
-      debugShowCheckedModeBanner: false, // Ocultar el banner de debug
+      routerConfig: appRouter,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

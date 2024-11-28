@@ -1,131 +1,110 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:log_in/pantallas/home.dart';
-import 'package:log_in/elementos/logindata.dart';
+import 'package:log_in/elementos/auth_provider.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   static const String name = 'login';
-  Login({super.key});
-  final TextEditingController usuarioController = TextEditingController();
-  final TextEditingController contrasenaController = TextEditingController();
+
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final TextEditingController _usuarioController = TextEditingController();
+  final TextEditingController _contrasenaController = TextEditingController();
+  final AuthService _authService = AuthService();
+
+  void _mostrarRegistroDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final TextEditingController _nuevoUsuarioController =
+            TextEditingController();
+        final TextEditingController _nuevaContrasenaController =
+            TextEditingController();
+
+        return AlertDialog(
+          title: const Text('Registrar nueva cuenta'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nuevoUsuarioController,
+                decoration: const InputDecoration(labelText: 'Usuario'),
+              ),
+              TextField(
+                controller: _nuevaContrasenaController,
+                decoration: const InputDecoration(labelText: 'Contraseña'),
+                obscureText: true,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                try {
+                  await _authService.registrarUsuario(
+                    _nuevoUsuarioController.text,
+                    _nuevaContrasenaController.text,
+                  );
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Cuenta registrada con éxito')),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: $e')),
+                  );
+                }
+              },
+              child: const Text('Registrar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _iniciarSesion() async {
+    try {
+      await _authService.iniciarSesion(
+        _usuarioController.text,
+        _contrasenaController.text,
+      );
+      Navigator.pushReplacementNamed(context, '/home');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 190, 190, 190),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(height: 50), //Sirve para dejar espacios
-              const Icon(
-                Icons.phone_iphone,
-                size: 125,
-                color: Color.fromRGBO(0, 0, 0, 1),
-              ),
-              const SizedBox(height: 50),
-
-              const Text(
-                //Texto de bienvenida
-                '¡Bienvenido de vuelta!',
-                style: TextStyle(
-                  color: Color.fromRGBO(0, 0, 0, 1),
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              Padding(
-                //Bloque de texto de contraseña
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextField(
-                  controller: usuarioController,
-                  obscureText: false,
-                  decoration: const InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color.fromRGBO(255, 255, 255, 1)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Color.fromRGBO(0, 0, 0, 1), width: 2.5),
-                    ),
-                    fillColor: Color.fromRGBO(255, 255, 255, 1),
-                    filled: true,
-                    hintText: 'Usuario',
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 5),
-
-              Padding(
-                //Bloque de texto de contraseña
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextField(
-                  controller: contrasenaController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color.fromRGBO(255, 255, 255, 1)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Color.fromRGBO(0, 0, 0, 1), width: 2.5),
-                    ),
-                    fillColor: Color.fromRGBO(255, 255, 255, 1),
-                    filled: true,
-                    hintText: 'Contraseña',
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 2),
-
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0),
-                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  Text(
-                    '¿Olvidaste tu contraseña?',
-                    style: TextStyle(color: Color.fromRGBO(206, 206, 206, 1)),
-                  )
-                ]),
-              ),
-
-              const SizedBox(height: 10),
-
-              ElevatedButton(
-                onPressed: () {
-                  String inputUser = usuarioController.text;
-                  String inputPass = contrasenaController.text;
-
-                  final perfilData = logInList.firstWhere(
-                      (perfilData) => perfilData.usuario == inputUser);
-
-                  if (inputPass.isEmpty || inputUser.isEmpty) {
-                    print("Por favor, ingrese Usuario y/o Contraseña");
-                    const Text(
-                      'Por favor, ingrese el usuario y/o contraseña',
-                      style: TextStyle(color: Colors.red),
-                    );
-                  } else if (perfilData.usuario == inputUser &&
-                      perfilData.contrasena == inputPass) {
-                    print("Log In exitoso");
-                    context.pushNamed(Home.name, extra: inputUser);
-                  } else {
-                    print("Log In fallido");
-                  }
-                },
-                child: const Text(
-                  'Log In',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-            ],
-          ),
+      appBar: AppBar(title: const Text('Login')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _usuarioController,
+              decoration: const InputDecoration(labelText: 'Usuario'),
+            ),
+            TextField(
+              controller: _contrasenaController,
+              decoration: const InputDecoration(labelText: 'Contraseña'),
+              obscureText: true,
+            ),
+            ElevatedButton(
+              onPressed: _iniciarSesion,
+              child: const Text('Iniciar Sesión'),
+            ),
+            TextButton(
+              onPressed: _mostrarRegistroDialog,
+              child: const Text('Crear nueva cuenta'),
+            ),
+          ],
         ),
       ),
     );
