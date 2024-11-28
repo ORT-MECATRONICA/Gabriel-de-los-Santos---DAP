@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:log_in/pantallas/home.dart';
 import 'package:log_in/elementos/logindata.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Login extends StatelessWidget {
   static const String name = 'login';
   Login({super.key});
   final TextEditingController usuarioController = TextEditingController();
   final TextEditingController contrasenaController = TextEditingController();
+
+  final TextEditingController registroUsuarioController = TextEditingController();
+  final TextEditingController registroContrasenaController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +22,14 @@ class Login extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              const SizedBox(height: 50), //Sirve para dejar espacios
+              const SizedBox(height: 50),
               const Icon(
                 Icons.phone_iphone,
                 size: 125,
                 color: Color.fromRGBO(0, 0, 0, 1),
               ),
               const SizedBox(height: 50),
-
               const Text(
-                //Texto de bienvenida
                 '¡Bienvenido de vuelta!',
                 style: TextStyle(
                   color: Color.fromRGBO(0, 0, 0, 1),
@@ -34,100 +37,93 @@ class Login extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               const SizedBox(height: 20),
-
               Padding(
-                //Bloque de texto de contraseña
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
                   controller: usuarioController,
-                  obscureText: false,
                   decoration: const InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color.fromRGBO(255, 255, 255, 1)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Color.fromRGBO(0, 0, 0, 1), width: 2.5),
-                    ),
-                    fillColor: Color.fromRGBO(255, 255, 255, 1),
-                    filled: true,
                     hintText: 'Usuario',
+                    filled: true,
                   ),
                 ),
               ),
-
               const SizedBox(height: 5),
-
               Padding(
-                //Bloque de texto de contraseña
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
                   controller: contrasenaController,
                   obscureText: true,
                   decoration: const InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color.fromRGBO(255, 255, 255, 1)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Color.fromRGBO(0, 0, 0, 1), width: 2.5),
-                    ),
-                    fillColor: Color.fromRGBO(255, 255, 255, 1),
-                    filled: true,
                     hintText: 'Contraseña',
+                    filled: true,
                   ),
                 ),
               ),
-
-              const SizedBox(height: 2),
-
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0),
-                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  Text(
-                    '¿Olvidaste tu contraseña?',
-                    style: TextStyle(color: Color.fromRGBO(206, 206, 206, 1)),
-                  )
-                ]),
-              ),
-
-              const SizedBox(height: 10),
-
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  String inputUser = usuarioController.text;
-                  String inputPass = contrasenaController.text;
+                  final usuario = usuarioController.text;
 
-                  final perfilData = logInList.firstWhere(
-                      (perfilData) => perfilData.usuario == inputUser);
-
-                  if (inputPass.isEmpty || inputUser.isEmpty) {
-                    print("Por favor, ingrese Usuario y/o Contraseña");
-                    const Text(
-                      'Por favor, ingrese el usuario y/o contraseña',
-                      style: TextStyle(color: Colors.red),
-                    );
-                  } else if (perfilData.usuario == inputUser &&
-                      perfilData.contrasena == inputPass) {
-                    print("Log In exitoso");
-                    context.pushNamed(Home.name, extra: inputUser);
-                  } else {
-                    print("Log In fallido");
-                  }
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Home(userName: usuario),
+                    ),
+                  );
                 },
-                child: const Text(
-                  'Log In',
-                  style: TextStyle(color: Colors.black),
-                ),
+                child: const Text('Entrar'),
+              ),
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () {
+                  _mostrarFormularioRegistro(context);
+                },
+                child: const Text('¿No tienes cuenta? Regístrate'),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  void _mostrarFormularioRegistro(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Registro'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: registroUsuarioController,
+                decoration: const InputDecoration(labelText: 'Usuario'),
+              ),
+              TextField(
+                controller: registroContrasenaController,
+                obscureText: true,
+                decoration: const InputDecoration(labelText: 'Contraseña'),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                final nombreUsuario = registroUsuarioController.text;
+                final contrasena = registroContrasenaController.text;
+                FirebaseFirestore.instance.collection('usuarios').add({
+                  'usuario': nombreUsuario,
+                  'contrasena': contrasena,
+                });
+                Navigator.of(context).pop();
+              },
+              child: const Text('Registrar'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

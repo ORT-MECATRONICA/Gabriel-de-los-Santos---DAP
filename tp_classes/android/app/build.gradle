@@ -41,10 +41,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.log_in"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -53,8 +50,6 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
         }
     }
@@ -64,4 +59,11 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    implementation 'com.google.firebase:firebase-auth:23.4.2'  // Añade Firebase Auth (si es necesario)
+    implementation 'com.google.firebase:firebase-firestore:24.0.0'  // Si estás usando Firestore
+    // Otros servicios de Firebase que quieras usar
+}
+
+// Aplica el plugin de Google Services para Firebase
+apply plugin: 'com.google.gms.google-services'  // Esta es la línea que necesitas

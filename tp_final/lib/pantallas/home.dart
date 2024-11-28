@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:log_in/elementos/jugadoresdata.dart';
 import 'package:log_in/elementos/jugadores_provider.dart';
 import 'package:log_in/pantallas/jugadoresinfo.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Convertir Home en ConsumerWidget para escuchar los cambios del provider
 class Home extends ConsumerWidget {
@@ -146,14 +145,6 @@ class Home extends ConsumerWidget {
                   ref
                       .read(jugadoresProvider.notifier)
                       .agregarJugador(nuevoJugador);
-                  // Agregar a Firestore
-                  FirebaseFirestore.instance.collection('jugadores').add({
-                    'nombre': nuevoJugador.nombre,
-                    'posicion': nuevoJugador.posicion,
-                    'pais': nuevoJugador.pais,
-                    'urlequipo': nuevoJugador.urlequipo,
-                    'urlcara': nuevoJugador.urlcara ?? '',
-                  });
                 }
 
                 Navigator.of(context).pop();
