@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'tp-log-in.firebasestorage.app',
     measurementId: 'G-RGZ68MXYFL',
   );
+
 }
