@@ -10,7 +10,7 @@ class Home extends ConsumerWidget {
   static const String name = 'home';
   final String userName;
 
-  const Home({super.key, this.userName = ''});
+  Home({super.key, this.userName = ''});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
