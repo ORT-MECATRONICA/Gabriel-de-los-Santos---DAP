@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:log_in/pantallas/home.dart';
-import 'package:log_in/elementos/logindata.dart';
+import 'package:tp_final/pantallas/home.dart';
+import 'package:tp_final/elementos/logindata.dart';
 
 class Login extends StatelessWidget {
   static const String name = 'login';

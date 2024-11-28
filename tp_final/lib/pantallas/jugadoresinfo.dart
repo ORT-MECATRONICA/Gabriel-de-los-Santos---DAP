@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:log_in/elementos/jugadoresdata.dart';
+import 'package:tp_final/elementos/jugadoresdata.dart';
 
 // ignore: must_be_immutable
 class JugadoresInfo extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:log_in/elementos/jugadoresdata.dart';
-import 'package:log_in/elementos/jugadores_provider.dart';
-import 'package:log_in/pantallas/jugadoresinfo.dart';
+import 'package:tp_final/elementos/jugadoresdata.dart';
+import 'package:tp_final/elementos/jugadores_provider.dart';
+import 'package:tp_final/pantallas/jugadoresinfo.dart';
 
 // Convertir Home en ConsumerWidget para escuchar los cambios del provider
 class Home extends ConsumerWidget {

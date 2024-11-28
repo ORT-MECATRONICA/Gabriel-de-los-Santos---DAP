@@ -1,8 +1,8 @@
 import 'package:go_router/go_router.dart';
-import 'package:log_in/pantallas/home.dart';
-import 'package:log_in/pantallas/login.dart';
-import 'package:log_in/pantallas/jugadoresinfo.dart';
-import 'package:log_in/elementos/jugadoresdata.dart';
+import 'package:tp_final/pantallas/home.dart';
+import 'package:tp_final/pantallas/login.dart';
+import 'package:tp_final/pantallas/jugadoresinfo.dart';
+import 'package:tp_final/elementos/jugadoresdata.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
